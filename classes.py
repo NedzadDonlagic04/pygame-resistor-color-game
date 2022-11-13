@@ -17,12 +17,61 @@ class Resistor:
         self.halfWidth = rectWidth / 2
         self.lineColor = (192, 192, 192)
 
+        self.font = pygame.font.Font('./fonts/Pixeltype.ttf', 40)
+
         self.resistorParts = [
-            { 'color': [0, 0, 0], 'x': self.resistorRect.left + 30, 'y': self.resistorRect.top, 'width': 40, 'height': self.resistorRect.height },
-            { 'color': [0, 0, 0], 'x': self.resistorRect.left + 100, 'y': self.resistorRect.top, 'width': 40, 'height': self.resistorRect.height},
-            { 'color': [0, 0, 0], 'x': self.resistorRect.left + 200, 'y': self.resistorRect.top, 'width': 40, 'height': self.resistorRect.height},
-            { 'color': [0, 0, 0], 'x': self.resistorRect.left + 300, 'y': self.resistorRect.top, 'width': 40, 'height': self.resistorRect.height},
+            { 'color': [0, 0, 0], 'x': self.resistorRect.left + 30, 'y': self.resistorRect.top, 'width': 40, 'height': self.resistorRect.height, 
+              'allowedColors': [
+                [0, 0, 0],
+                [160, 82, 45],
+                [255, 0, 0],
+                [255, 165, 0],
+                [255, 255, 0],
+                [0, 255, 0],
+                [0, 0, 255],
+                [128, 0, 128],
+                [128, 128, 128],
+                [255, 255, 255]
+              ], 'meaning': ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], 'text': None, 'textRect': None },
+            { 'color': [0, 0, 0], 'x': self.resistorRect.left + 100, 'y': self.resistorRect.top, 'width': 40, 'height': self.resistorRect.height,
+              'allowedColors': [
+                [0, 0, 0],
+                [160, 82, 45],
+                [255, 0, 0],
+                [255, 165, 0],
+                [255, 255, 0],
+                [0, 255, 0],
+                [0, 0, 255],
+                [128, 0, 128],
+                [128, 128, 128],
+                [255, 255, 255]
+              ], 'meaning': ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], 'text': None, 'textRect': None },
+            { 'color': [0, 0, 0], 'x': self.resistorRect.left + 200, 'y': self.resistorRect.top, 'width': 40, 'height': self.resistorRect.height,
+              'allowedColors': [
+                [0, 0, 0],
+                [160, 82, 45],
+                [255, 0, 0],
+                [255, 165, 0],
+                [255, 255, 0],
+                [0, 255, 0],
+                [0, 0, 255],
+                [255, 215, 0],
+                [192, 192, 192]
+               ], 'meaning': ['x1 Ohm', 'x10 Ohm', 'x100 Ohm', 'x1K Ohm', 'x10K Ohm', 'x100K Ohm', 'x1M Ohm', 'x0.1 Ohm', 'x0.01 Ohm'],
+                'text': None, 'textRect': None },
+            { 'color': [0, 0, 0], 'x': self.resistorRect.left + 300, 'y': self.resistorRect.top, 'width': 40, 'height': self.resistorRect.height,
+              'allowedColors': [
+                [160, 82, 45],
+                [255, 0, 0],
+                [255, 215, 0],
+                [192, 192, 192]
+               ], 'meaning': ['  +- 1%', '  +- 2%', '  +- 5%', '  +- 10%'], 'text': None, 'textRect': None }
         ]
+    
+    def compareColors(self, color1, color2):
+        if color1[0] == color2[0] and color1[1] == color2[1] and color1[2] == color2[2]:
+            return True
+        return False
 
     def update(self, color):
         leftClick = pygame.mouse.get_pressed()[0]
@@ -31,15 +80,20 @@ class Resistor:
             mousePos = pygame.mouse.get_pos()
             for part in self.resistorParts:
                 if mousePos[0] >= part['x'] and mousePos[0] <= part['x'] + part['width'] and mousePos[1] >= part['y'] and mousePos[1] <= part['y'] + part['height']:
-                    part['color'] = color
-                    break
+                    for i in range(0, len(part['allowedColors'])):
+                        if self.compareColors(part['allowedColors'][i], color):
+                            part['color'] = color
+                            part['text'] = self.font.render(part['meaning'][i], False, 'black')
+                            part['textRect'] = part['text'].get_rect( center = (part['x'] + part['width'] / 2, part['y'] - 15) )
+                            break
                 
-
     def draw(self, screen):
         screen.blit(self.resistorImg, self.resistorRect)
 
         for part in self.resistorParts:
             pygame.draw.rect(screen, part['color'], (part['x'], part['y'], part['width'], part['height']))
+            if part['text'] != None:
+                screen.blit(part['text'], part['textRect'])
 
         pygame.draw.line(screen, self.lineColor, (self.resistorRect.left - 150, self.resistorRect.centery), (self.resistorRect.left, self.resistorRect.centery), 20)
         pygame.draw.line(screen, self.lineColor, (self.resistorRect.right + 150, self.resistorRect.centery), (self.resistorRect.right, self.resistorRect.centery), 20)
