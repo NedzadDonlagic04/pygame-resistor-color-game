@@ -42,6 +42,8 @@ class Game:
             x = self.RESISTOR.resistorRect.left - 100
             y = y + 100
 
+        self.color = [255, 0, 0]
+
     def quit(self):
         pygame.quit()
         exit()
@@ -54,10 +56,11 @@ class Game:
             
             self.SCREEN.fill(self.SCREEN_BG)
 
+            self.RESISTOR.update(self.color)
             self.RESISTOR.draw(self.SCREEN)
 
             for btn in self.colorBtn:
-                btn.update()
+                self.color = btn.update(self.color)
                 btn.draw(self.SCREEN)
 
             pygame.display.update()

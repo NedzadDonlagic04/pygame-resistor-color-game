@@ -17,8 +17,30 @@ class Resistor:
         self.halfWidth = rectWidth / 2
         self.lineColor = (192, 192, 192)
 
+        self.resistorParts = [
+            { 'color': [0, 0, 0], 'x': self.resistorRect.left + 30, 'y': self.resistorRect.top, 'width': 40, 'height': self.resistorRect.height },
+            { 'color': [0, 0, 0], 'x': self.resistorRect.left + 100, 'y': self.resistorRect.top, 'width': 40, 'height': self.resistorRect.height},
+            { 'color': [0, 0, 0], 'x': self.resistorRect.left + 200, 'y': self.resistorRect.top, 'width': 40, 'height': self.resistorRect.height},
+            { 'color': [0, 0, 0], 'x': self.resistorRect.left + 300, 'y': self.resistorRect.top, 'width': 40, 'height': self.resistorRect.height},
+        ]
+
+    def update(self, color):
+        leftClick = pygame.mouse.get_pressed()[0]
+
+        if leftClick:
+            mousePos = pygame.mouse.get_pos()
+            for part in self.resistorParts:
+                if mousePos[0] >= part['x'] and mousePos[0] <= part['x'] + part['width'] and mousePos[1] >= part['y'] and mousePos[1] <= part['y'] + part['height']:
+                    part['color'] = color
+                    break
+                
+
     def draw(self, screen):
         screen.blit(self.resistorImg, self.resistorRect)
+
+        for part in self.resistorParts:
+            pygame.draw.rect(screen, part['color'], (part['x'], part['y'], part['width'], part['height']))
+
         pygame.draw.line(screen, self.lineColor, (self.resistorRect.left - 150, self.resistorRect.centery), (self.resistorRect.left, self.resistorRect.centery), 20)
         pygame.draw.line(screen, self.lineColor, (self.resistorRect.right + 150, self.resistorRect.centery), (self.resistorRect.right, self.resistorRect.centery), 20)
 
@@ -47,15 +69,19 @@ class ColorButton:
         else:
             self.lineColor = [255, 255, 255]
 
-    def update(self):
+        self.colorCode = color[1]
+
+    def update(self, color):
         leftClick = pygame.mouse.get_pressed()[0]
 
         if leftClick:
             mousePos = pygame.mouse.get_pos()
             if mousePos[0] >= self.x and mousePos[0] <= self.x + self.rectWidth and mousePos[1] >= self.y and mousePos[1] <= self.y + self.rectHeight:
                 self.focused = True
+                return self.colorCode
             else:
                 self.focused = False
+        return color
     
     def draw(self, screen):
         pygame.draw.rect(screen, self.background, (self.x, self.y, self.rectWidth, self.rectHeight))
