@@ -11,7 +11,7 @@ class MyClock:
 class Resistor:
     def __init__(self, rectWidth, rectHeight, pos, color=[234, 182, 118]):
         self.resistorImg = pygame.Surface((rectWidth, rectHeight), pygame.SRCALPHA)
-        pygame.draw.rect(self.resistorImg, color, (0, 0, rectWidth, rectHeight))
+        pygame.draw.rect(self.resistorImg, color, (0, 0, rectWidth, rectHeight), border_radius=10)
         self.resistorRect = self.resistorImg.get_rect( center = pos )
 
         self.halfWidth = rectWidth / 2
@@ -21,3 +21,47 @@ class Resistor:
         screen.blit(self.resistorImg, self.resistorRect)
         pygame.draw.line(screen, self.lineColor, (self.resistorRect.left - 150, self.resistorRect.centery), (self.resistorRect.left, self.resistorRect.centery), 20)
         pygame.draw.line(screen, self.lineColor, (self.resistorRect.right + 150, self.resistorRect.centery), (self.resistorRect.right, self.resistorRect.centery), 20)
+
+class ColorButton:
+    def __init__(self, x, y, color):
+        self.rectWidth = 100
+        self.rectHeight = 50
+
+        self.x = x
+        self.y = y
+        self.focused = False
+
+        self.text = None
+        font = pygame.font.Font('./fonts/Pixeltype.ttf', 25)
+        if(color[0] == 'White' or color[0] == 'Yellow' or color[0] == 'Green'):
+            self.text = font.render(color[0], False, 'black')
+        else:
+            self.text = font.render(color[0], False, 'white')
+        
+        self.textRect = self.text.get_rect( center = (x + self.rectWidth / 2, y + self.rectHeight / 2) )
+
+        self.background = color[1]
+        
+        if(color[0] == 'White'):
+            self.lineColor = [0, 0, 0]
+        else:
+            self.lineColor = [255, 255, 255]
+
+    def update(self):
+        leftClick = pygame.mouse.get_pressed()[0]
+
+        if leftClick:
+            mousePos = pygame.mouse.get_pos()
+            if mousePos[0] >= self.x and mousePos[0] <= self.x + self.rectWidth and mousePos[1] >= self.y and mousePos[1] <= self.y + self.rectHeight:
+                self.focused = True
+            else:
+                self.focused = False
+    
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.background, (self.x, self.y, self.rectWidth, self.rectHeight))
+        screen.blit(self.text, self.textRect)
+        if self.focused:
+            pygame.draw.line(screen, self.lineColor, (self.x, self.y - 5), (self.x + self.rectWidth, self.y - 5), 8)
+            pygame.draw.line(screen, self.lineColor, (self.x, self.y + self.rectHeight), (self.x + self.rectWidth, self.y + self.rectHeight), 8)
+            pygame.draw.line(screen, self.lineColor, (self.x - 2, self.y - 8), (self.x - 2, self.y + self.rectHeight + 4), 8)
+            pygame.draw.line(screen, self.lineColor, (self.x + self.rectWidth + 2, self.y - 8), (self.x + self.rectWidth + 2, self.y + self.rectHeight + 4), 8)
