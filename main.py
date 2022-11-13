@@ -13,6 +13,8 @@ class Game:
 
         self.CLOCK = MyClock(60)
 
+        self.RESISTOR = Resistor(400, 150, (400, 200))
+
     def quit(self):
         pygame.quit()
         exit()
@@ -24,6 +26,8 @@ class Game:
                     self.quit()
             
             self.SCREEN.fill(self.SCREEN_BG)
+
+            self.RESISTOR.draw(self.SCREEN)
 
             pygame.display.update()
             self.CLOCK.tick()
