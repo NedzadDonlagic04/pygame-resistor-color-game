@@ -133,6 +133,8 @@ class ColorButton:
             if mousePos[0] >= self.x and mousePos[0] <= self.x + self.rectWidth and mousePos[1] >= self.y and mousePos[1] <= self.y + self.rectHeight:
                 self.focused = True
                 return self.colorCode
+            elif self.colorCode == color:
+                self.focused = True
             else:
                 self.focused = False
         return color
