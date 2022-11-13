@@ -42,7 +42,7 @@ class Game:
             x = self.RESISTOR.resistorRect.left - 100
             y = y + 100
 
-        self.color = [255, 0, 0]
+        self.color = [1, 1, 1]
 
     def quit(self):
         pygame.quit()
